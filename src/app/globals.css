@@ -1,26 +1,156 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: #6c5ce7;
+  --color-primary-light: #a29bfe;
+  --color-bin-red: #e74c3c;
+  --color-bin-orange: #f39c12;
+  --color-bin-green: #27ae60;
+  --color-cork: #d4a574;
+  --font-sans: var(--font-heebo);
+  --font-hand: var(--font-caveat);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #f5f0e8;
+  --foreground: #2d3436;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, 'Heebo', sans-serif);
+  direction: rtl;
+}
+
+/* Cork board texture */
+.cork-bg {
+  background-color: #d4a574;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(0,0,0,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,0,0,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(0,0,0,0.04) 0%, transparent 50%);
+}
+
+/* Sticky note base styles */
+.sticky-note {
+  position: relative;
+  padding: 1.25rem;
+  border-radius: 2px;
+  box-shadow:
+    2px 3px 7px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.sticky-note::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px 2px 0 0;
+}
+
+.sticky-note:hover {
+  transform: scale(1.02);
+}
+
+/* Bin styles */
+.bin-container {
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.bin-container.active {
+  transform: scale(1.05);
+}
+
+/* Crumple animation keyframes */
+@keyframes crumple {
+  0% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    clip-path: polygon(5% 5%, 95% 2%, 97% 95%, 3% 97%);
+    transform: scale(0.85) rotate(5deg);
+  }
+  50% {
+    clip-path: polygon(15% 10%, 85% 8%, 90% 88%, 12% 90%);
+    transform: scale(0.6) rotate(-8deg);
+  }
+  75% {
+    clip-path: polygon(25% 20%, 75% 18%, 78% 78%, 22% 80%);
+    transform: scale(0.4) rotate(12deg);
+  }
+  100% {
+    clip-path: polygon(35% 30%, 65% 28%, 68% 68%, 32% 70%);
+    transform: scale(0.3) rotate(-5deg);
+    border-radius: 50%;
+  }
+}
+
+.crumpling {
+  animation: crumple 0.3s ease-in forwards;
+}
+
+/* Particles burst */
+@keyframes particle-burst {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.particle {
+  animation: particle-burst 0.4s ease-out forwards;
+}
+
+/* Bin bounce */
+@keyframes bin-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.bin-bounce {
+  animation: bin-bounce 0.3s ease;
+}
+
+/* Progress bar glow */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(108, 92, 231, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(108, 92, 231, 0.6); }
+}
+
+.progress-glow {
+  animation: glow 2s infinite;
+}
+
+/* Confetti */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  animation: confetti-fall 3s ease-in forwards;
 }
