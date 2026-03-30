@@ -22,18 +22,26 @@ export function useSessions(principalUid: string | undefined) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!principalUid) return;
+    if (!principalUid) {
+      setLoading(false);
+      return;
+    }
 
     async function fetchSessions() {
-      const q = query(
-        collection(db, 'sessions'),
-        where('principalUid', '==', principalUid),
-        orderBy('createdAt', 'desc')
-      );
-      const snapshot = await getDocs(q);
-      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Session));
-      setSessions(data);
-      setLoading(false);
+      try {
+        const q = query(
+          collection(db, 'sessions'),
+          where('principalUid', '==', principalUid),
+          orderBy('createdAt', 'desc')
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Session));
+        setSessions(data);
+      } catch (err) {
+        console.error('Error fetching sessions:', err);
+      } finally {
+        setLoading(false);
+      }
     }
 
     fetchSessions();
@@ -76,13 +84,18 @@ export function useSessionByCode(code: string) {
     if (!code) return;
 
     async function fetchSession() {
-      const q = query(collection(db, 'sessions'), where('shortCode', '==', code.toUpperCase()));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const d = snapshot.docs[0];
-        setSession({ id: d.id, ...d.data() } as Session);
+      try {
+        const q = query(collection(db, 'sessions'), where('shortCode', '==', code.toUpperCase()));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const d = snapshot.docs[0];
+          setSession({ id: d.id, ...d.data() } as Session);
+        }
+      } catch (err) {
+        console.error('Error fetching session by code:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchSession();
@@ -99,11 +112,16 @@ export function useSessionById(sessionId: string) {
     if (!sessionId) return;
 
     async function fetchSession() {
-      const docSnap = await getDoc(doc(db, 'sessions', sessionId));
-      if (docSnap.exists()) {
-        setSession({ id: docSnap.id, ...docSnap.data() } as Session);
+      try {
+        const docSnap = await getDoc(doc(db, 'sessions', sessionId));
+        if (docSnap.exists()) {
+          setSession({ id: docSnap.id, ...docSnap.data() } as Session);
+        }
+      } catch (err) {
+        console.error('Error fetching session by ID:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchSession();

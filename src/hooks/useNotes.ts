@@ -24,13 +24,17 @@ export function useNotes(sessionId: string) {
   const addNote = useCallback(
     async (text: string, teacherToken: string) => {
       if (!sessionId || !text.trim()) return;
-      await addDoc(collection(db, 'sessions', sessionId, 'notes'), {
-        text: text.trim(),
-        teacherToken,
-        bin: null,
-        sortedAt: null,
-        createdAt: serverTimestamp(),
-      });
+      try {
+        await addDoc(collection(db, 'sessions', sessionId, 'notes'), {
+          text: text.trim(),
+          teacherToken,
+          bin: null,
+          sortedAt: null,
+          createdAt: serverTimestamp(),
+        });
+      } catch (err) {
+        console.error('Error adding note:', err);
+      }
     },
     [sessionId]
   );
@@ -39,15 +43,20 @@ export function useNotes(sessionId: string) {
     async (teacherToken: string): Promise<Note[]> => {
       if (!sessionId || !teacherToken) return [];
       setLoading(true);
-      const q = query(
-        collection(db, 'sessions', sessionId, 'notes'),
-        where('teacherToken', '==', teacherToken),
-        orderBy('createdAt', 'asc')
-      );
-      const snapshot = await getDocs(q);
-      const notes = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
-      setLoading(false);
-      return notes;
+      try {
+        const q = query(
+          collection(db, 'sessions', sessionId, 'notes'),
+          where('teacherToken', '==', teacherToken),
+          orderBy('createdAt', 'asc')
+        );
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
+      } catch (err) {
+        console.error('Error fetching teacher notes:', err);
+        return [];
+      } finally {
+        setLoading(false);
+      }
     },
     [sessionId]
   );
@@ -55,11 +64,16 @@ export function useNotes(sessionId: string) {
   const getAllNotes = useCallback(async (): Promise<Note[]> => {
     if (!sessionId) return [];
     setLoading(true);
-    const q = query(collection(db, 'sessions', sessionId, 'notes'), orderBy('createdAt', 'asc'));
-    const snapshot = await getDocs(q);
-    const notes = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
-    setLoading(false);
-    return notes;
+    try {
+      const q = query(collection(db, 'sessions', sessionId, 'notes'), orderBy('createdAt', 'asc'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
+    } catch (err) {
+      console.error('Error fetching all notes:', err);
+      return [];
+    } finally {
+      setLoading(false);
+    }
   }, [sessionId]);
 
   const sortNote = useCallback(

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { BinType, BIN_CONFIG } from '@/types/bin';
 import { forwardRef, useState, useImperativeHandle } from 'react';
+import BinIllustration from '@/components/ui/BinIllustration';
 
 interface BinTargetProps {
   binType: BinType;
@@ -30,45 +31,34 @@ const BinTarget = forwardRef<BinTargetRef, BinTargetProps>(
       getElement: () => element,
     }));
 
-    const fillHeight = fillLevel === 'empty' ? '0%' : fillLevel === 'half' ? '50%' : '85%';
-
     return (
       <motion.div
         ref={setElement}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.08, rotate: [-1, 1, -1, 0] }}
+        whileTap={{ scale: 0.92 }}
         onClick={onClick}
-        className={`bin-container cursor-pointer flex flex-col items-center gap-2 ${bouncing ? 'bin-bounce' : ''}`}
+        animate={bouncing ? { y: [0, -12, 0], scale: [1, 1.1, 1] } : {}}
+        transition={{ duration: 0.3 }}
+        className="cursor-pointer flex flex-col items-center gap-1 relative"
       >
-        <div
-          className="relative w-24 h-28 rounded-b-2xl border-4 overflow-hidden"
-          style={{ borderColor: config.color }}
-        >
-          {/* Fill level */}
+        {/* Count badge */}
+        {count > 0 && (
           <motion.div
-            className="absolute bottom-0 left-0 right-0 rounded-b-lg opacity-30"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg z-10"
             style={{ backgroundColor: config.color }}
-            animate={{ height: fillHeight }}
-            transition={{ duration: 0.5 }}
-          />
-          {/* Icon */}
-          <div className="absolute inset-0 flex items-center justify-center text-3xl">
-            {config.icon}
-          </div>
-          {/* Count badge */}
-          {count > 0 && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold"
-              style={{ backgroundColor: config.color }}
-            >
-              {count}
-            </motion.div>
-          )}
-        </div>
+          >
+            {count}
+          </motion.div>
+        )}
+
+        {/* Illustrated bin */}
+        <BinIllustration type={binType} size={80} fillLevel={fillLevel} />
+
+        {/* Label */}
         <span
-          className="text-xs font-medium text-center max-w-[100px] leading-tight"
+          className="text-xs font-bold text-center max-w-[100px] leading-tight mt-1"
           style={{ color: config.color }}
         >
           {config.label}
