@@ -73,15 +73,11 @@ export default function WritePage({
 
       <OofOMeter count={notes.length} />
 
-      <NoteWriter onAdd={handleAdd} />
-
-      <NoteStack notes={notes} />
-
       {notes.length > 0 && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center mt-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-4"
         >
           <button
             onClick={handleFinishWriting}
@@ -91,6 +87,10 @@ export default function WritePage({
           </button>
         </motion.div>
       )}
+
+      <NoteWriter onAdd={handleAdd} />
+
+      <NoteStack notes={notes} />
 
       {/* Milestone messages */}
       {showMilestone && (
