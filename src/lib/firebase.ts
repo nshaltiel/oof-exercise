@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getFirestore, Firestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -18,5 +18,18 @@ function getFirebaseApp() {
   return getApp();
 }
 
-export const db = getFirestore(getFirebaseApp());
-export const auth = getAuth(getFirebaseApp());
+const app = getFirebaseApp();
+
+// Initialize Firestore with persistent cache for fast repeat loads
+let db: Firestore;
+try {
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+  });
+} catch {
+  // Already initialized (e.g. hot reload) - get existing instance
+  db = getFirestore(app);
+}
+
+export { db };
+export const auth = getAuth(app);

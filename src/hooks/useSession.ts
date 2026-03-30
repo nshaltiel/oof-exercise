@@ -9,7 +9,6 @@ import {
   getDoc,
   query,
   where,
-  orderBy,
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore';
@@ -20,6 +19,7 @@ import { generateShortCode } from '@/lib/shortCode';
 export function useSessions(principalUid: string | undefined) {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!principalUid) {
@@ -29,16 +29,28 @@ export function useSessions(principalUid: string | undefined) {
 
     async function fetchSessions() {
       try {
+        // Simple query without orderBy to avoid needing composite index
         const q = query(
           collection(db, 'sessions'),
-          where('principalUid', '==', principalUid),
-          orderBy('createdAt', 'desc')
+          where('principalUid', '==', principalUid)
         );
-        const snapshot = await getDocs(q);
+
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('timeout')), 10000)
+        );
+
+        const snapshot = await Promise.race([getDocs(q), timeoutPromise]);
         const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Session));
+        // Sort client-side instead
+        data.sort((a, b) => {
+          const aTime = a.createdAt?.toDate?.() ? a.createdAt.toDate().getTime() : 0;
+          const bTime = b.createdAt?.toDate?.() ? b.createdAt.toDate().getTime() : 0;
+          return bTime - aTime;
+        });
         setSessions(data);
       } catch (err) {
         console.error('Error fetching sessions:', err);
+        setError('שגיאה בטעינת הסשנים. נסה לרענן את הדף.');
       } finally {
         setLoading(false);
       }
@@ -47,7 +59,7 @@ export function useSessions(principalUid: string | undefined) {
     fetchSessions();
   }, [principalUid]);
 
-  return { sessions, loading };
+  return { sessions, loading, error };
 }
 
 export function useCreateSession() {

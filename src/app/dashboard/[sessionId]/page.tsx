@@ -7,7 +7,6 @@ import { useSessionById } from '@/hooks/useSession';
 import { useRealtimeNotes } from '@/hooks/useRealtimeNotes';
 import { useNotes } from '@/hooks/useNotes';
 import BinDashboard from '@/components/dashboard/BinDashboard';
-import ShareLinkCard from '@/components/dashboard/ShareLinkCard';
 import SettingsMenu from '@/components/dashboard/SettingsMenu';
 import Link from 'next/link';
 
@@ -48,14 +47,7 @@ export default function SessionDashboardPage({
         <SettingsMenu shareLink={shareLink} onDeleteAll={deleteAllNotes} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <BinDashboard notes={notes} sessionId={sessionId} />
-        </div>
-        <div>
-          <ShareLinkCard shortCode={session.shortCode} />
-        </div>
-      </div>
+      <BinDashboard notes={notes} sessionId={sessionId} />
     </div>
   );
 }

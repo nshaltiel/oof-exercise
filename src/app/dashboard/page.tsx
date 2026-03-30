@@ -9,10 +9,34 @@ import { motion } from 'framer-motion';
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { sessions, loading } = useSessions(user?.uid);
+  const { sessions, loading, error } = useSessions(user?.uid);
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-500">טוען סשנים...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="w-10 h-10 border-4 border-[#6c5ce7] border-t-transparent rounded-full"
+        />
+        <span className="text-gray-400 text-sm">טוען סשנים...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-3">😵</div>
+        <p className="text-red-500 mb-4">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-[#6c5ce7] text-white px-6 py-2 rounded-xl hover:bg-[#5b4bd5]"
+        >
+          נסה שוב
+        </button>
+      </div>
+    );
   }
 
   return (

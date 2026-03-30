@@ -10,7 +10,6 @@ import {
   doc,
   query,
   where,
-  orderBy,
   serverTimestamp,
   writeBatch,
 } from 'firebase/firestore';
@@ -46,11 +45,16 @@ export function useNotes(sessionId: string) {
       try {
         const q = query(
           collection(db, 'sessions', sessionId, 'notes'),
-          where('teacherToken', '==', teacherToken),
-          orderBy('createdAt', 'asc')
+          where('teacherToken', '==', teacherToken)
         );
         const snapshot = await getDocs(q);
-        return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
+        const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
+        data.sort((a, b) => {
+          const aTime = a.createdAt?.toDate?.() ? a.createdAt.toDate().getTime() : 0;
+          const bTime = b.createdAt?.toDate?.() ? b.createdAt.toDate().getTime() : 0;
+          return aTime - bTime;
+        });
+        return data;
       } catch (err) {
         console.error('Error fetching teacher notes:', err);
         return [];
@@ -65,9 +69,14 @@ export function useNotes(sessionId: string) {
     if (!sessionId) return [];
     setLoading(true);
     try {
-      const q = query(collection(db, 'sessions', sessionId, 'notes'), orderBy('createdAt', 'asc'));
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
+      const snapshot = await getDocs(collection(db, 'sessions', sessionId, 'notes'));
+      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Note));
+      data.sort((a, b) => {
+        const aTime = a.createdAt?.toDate?.() ? a.createdAt.toDate().getTime() : 0;
+        const bTime = b.createdAt?.toDate?.() ? b.createdAt.toDate().getTime() : 0;
+        return aTime - bTime;
+      });
+      return data;
     } catch (err) {
       console.error('Error fetching all notes:', err);
       return [];
