@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { use, useState, useEffect, useCallback } from 'react';
 import { useSessionByCode } from '@/hooks/useSession';
 import { useTeacherToken } from '@/hooks/useTeacherToken';
