@@ -34,14 +34,13 @@ export default function CompletionScreen({ totalNotes, onContinue }: CompletionS
         <p className="text-gray-500 text-base mb-8 max-w-sm mx-auto">
           נמשיך את הדיון במליאה 🙌
         </p>
-        {onContinue && (
-          <button
-            onClick={onContinue}
-            className="bg-[#6c5ce7] text-white px-8 py-3 rounded-xl text-lg font-medium hover:bg-[#5b4bd5] transition-colors"
-          >
-            סיום
-          </button>
-        )}
+        <motion.div
+          animate={{ scale: [1, 1.15, 1], rotate: [0, 10, -10, 0] }}
+          transition={{ duration: 1.2, delay: 0.6, repeat: Infinity, repeatDelay: 2 }}
+          className="text-6xl"
+        >
+          ⭐
+        </motion.div>
       </motion.div>
     </>
   );
