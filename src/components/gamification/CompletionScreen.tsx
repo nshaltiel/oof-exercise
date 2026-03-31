@@ -32,9 +32,7 @@ export default function CompletionScreen({ totalNotes, onContinue }: CompletionS
           מיינת {totalNotes} פתקים בהצלחה
         </p>
         <p className="text-gray-500 text-base mb-8 max-w-sm mx-auto">
-          לפעמים רק לתת שם לתסכול כבר עוזר.
-          <br />
-          הקול שלך נשמע 💜
+          נמשיך את הדיון במליאה 🙌
         </p>
         {onContinue && (
           <button

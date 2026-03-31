@@ -40,10 +40,16 @@ export default function SettingsMenu({ shareLink, onDeleteAll }: SettingsMenuPro
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-14 h-14 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors text-gray-600"
-        title="הגדרות"
+        className="flex flex-col items-center gap-1 hover:opacity-80 transition-opacity text-gray-600"
+        title="שיתוף קישור לתרגיל"
       >
-        <span className="text-3xl">⚙️</span>
+        <div className="w-14 h-14 flex items-center justify-center rounded-full bg-[#6c5ce7] text-white shadow-md hover:bg-[#5b4bd5] transition-colors">
+          <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </div>
+        <span className="text-xs text-gray-500 text-center leading-tight max-w-[80px]">לשיתוף הקישור לתרגיל עם הצוות</span>
       </button>
 
       <AnimatePresence>

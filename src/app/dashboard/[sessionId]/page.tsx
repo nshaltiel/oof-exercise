@@ -43,6 +43,9 @@ export default function SessionDashboardPage({
           </Link>
           <h1 className="text-2xl font-bold">{session.title}</h1>
           <p className="text-gray-500">{session.schoolName}</p>
+          <p className="text-sm text-gray-400 mt-2 max-w-lg leading-relaxed">
+            כעת ניתן לשתף את המסך עם הצוות ולדון יחד במעגלי ההשפעה שלנו. לחיצה על הפתק שמעניין אותנו מאפשרת העברה שלו לסל אחר או הסרה שלו.
+          </p>
         </div>
         <SettingsMenu shareLink={shareLink} onDeleteAll={deleteAllNotes} />
       </div>
