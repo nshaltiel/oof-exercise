@@ -44,7 +44,11 @@ export default function SessionDashboardPage({
           <h1 className="text-2xl font-bold">{session.title}</h1>
           <p className="text-gray-500">{session.schoolName}</p>
           <p className="text-sm text-gray-400 mt-2 max-w-lg leading-relaxed">
-            כעת ניתן לשתף את המסך עם הצוות ולדון יחד במעגלי ההשפעה שלנו. לחיצה על הפתק שמעניין אותנו מאפשרת העברה שלו לסל אחר או הסרה שלו.
+            ברוכים הבאים לתרגיל האוףףף!<br />
+            בשלב הראשון, שתפו את המשתתפים בתרגיל (חברי צוות/תלמידים/אחר) באמצעות הקישור המופיע בצד השמאלי של המסך.<br />
+            אחרי שהמשתתפים יסיימו לכתוב פתקי אוף ולמיין אותם לסלים,<br />
+            ניתן לחזור ולשתף את המסך הזה ולדון יחד במעגלי ההשפעה שלנו. לחיצה על הפתק שמעניין אותנו לדון בו, מאפשרת העברה שלו לסל אחר או הסרה שלו - לפי מסקנות הדיון.<br />
+            בהצלחה!
           </p>
         </div>
         <SettingsMenu shareLink={shareLink} onDeleteAll={deleteAllNotes} />
